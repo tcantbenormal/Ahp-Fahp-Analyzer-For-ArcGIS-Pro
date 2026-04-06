@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ArcGIS defaultAssembly="AhpFahpAnalyzer.dll" defaultNamespace="AhpFahpAnalyzer" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+
+	<AddInInfo id="{0ccfbb63-add1-4d33-9189-dd4fbfde99a5}" version="1.0" desktopVersion="3.3.0">
+		<Name>AhpFahpAnalyzer</Name>
+		<Description>MCDA Spatial Analysis Add-in</Description>
+		<Image>Images\AddinDesktop32.png</Image>
+		<Author>Taimoor Ashfaq</Author>
+		<Company>Independent Developer</Company>
+		<Date>4/2/2026</Date>
+		<Subject>Framework</Subject>
+	</AddInInfo>
+
+	<modules>
+    <insertModule id="AhpFahpAnalyzer_Module" className="Module1" autoLoad="false" caption="Module1">
+      <tabs>
+        <tab id="AhpFahpAnalyzer_Tab1" caption="MCDA Tools">
+          <group refID="AhpFahpAnalyzer_Group1" />
+        </tab>
+      </tabs>
+      <groups>
+        <group id="AhpFahpAnalyzer_Group1" caption="Analysis" appearsOnAddInTab="false">
+          <button refID="AhpFahpAnalyzer_AhpDockpane_ShowButton" size="large" />
+        </group>
+      </groups>
+      <controls>
+        <!-- The className below strictly maps to the AhpDockpane_ShowButton class inside your ViewModel.cs file -->
+        <button id="AhpFahpAnalyzer_AhpDockpane_ShowButton" caption="AHP Analysis" className="AhpFahpAnalyzer.AhpDockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+          <tooltip heading="Show Dockpane">Open the AHP and FAHP Spatial Analysis UI.<disabledText /></tooltip>
+        </button>
+      </controls>
+      <dockPanes>
+        <!-- The className below maps to the AhpDockpaneViewModel class -->
+        <dockPane id="AhpFahpAnalyzer_AhpDockpane" caption="AHP Analysis" className="AhpFahpAnalyzer.AhpDockpaneViewModel" dock="group" dockWith="esri_core_projectDockPane">
+          <content className="AhpFahpAnalyzer.AhpDockpaneView" />
+        </dockPane>
+      </dockPanes>
+    </insertModule>
+  </modules>
+</ArcGIS>

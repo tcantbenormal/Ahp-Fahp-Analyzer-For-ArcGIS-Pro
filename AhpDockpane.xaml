@@ -1,0 +1,193 @@
+<UserControl x:Class="AhpFahpAnalyzer.AhpDockpaneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AhpFahpAnalyzer"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1100" Background="#F0F0F0">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <!-- Modern Clean Styling -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Background" Value="#E0E0E0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin" Value="0,5" />
+        </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="#F9F9F9" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+
+        <!-- COLUMN 0: Available Rasters -->
+        <DockPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="0,0,0,5">
+            <Button DockPanel.Dock="Right" Content="Refresh" Command="{Binding RefreshRastersCommand}" Padding="5,0" Height="22" VerticalAlignment="Center" ToolTip="Fetch layers from active map" />
+            <TextBlock Text="Available Rasters" FontWeight="Bold" VerticalAlignment="Center" />
+        </DockPanel>
+        <ListBox x:Name="AvailableRastersList" Grid.Row="1" Grid.Column="0" Margin="0,25,0,0" ItemsSource="{Binding AvailableRasters}" SelectedItem="{Binding SelectedAvailableRaster}" SelectionMode="Extended" />
+
+        <Button Grid.Row="2" Grid.Column="0" Content="About" Command="{Binding ShowAboutCommand}" HorizontalAlignment="Left" Width="100" Margin="0,15,0,0" 
+                Background="#CCE5FF" BorderBrush="#007ACC" Foreground="Black" BorderThickness="1"/>
+
+        <!-- COLUMN 1: Add/Remove Buttons -->
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+            <Button Style="{StaticResource ActionButton}" Content="Click to add&#x0A;a raster to&#x0A;selected&#x0A;criteria &gt;" Command="{Binding AddSingleRasterCommand}" Height="70" />
+            <Button Style="{StaticResource ActionButton}" Content="Add&#x0A;multiple&#x0A;rasters to&#x0A;selected&#x0A;criteria &gt;&gt;&gt;" Command="{Binding AddMultipleRastersCommand}" CommandParameter="{Binding SelectedItems, ElementName=AvailableRastersList}" Height="90" Margin="0,20" />
+            <Button Style="{StaticResource ActionButton}" Content="Click to&#x0A;remove a&#x0A;selected&#x0A;criteria &lt;" Command="{Binding RemoveCriterionCommand}" Height="70" />
+        </StackPanel>
+
+        <!-- COLUMN 2: Selected Criteria -->
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Selected Criteria - (Atleast 3)" FontWeight="Bold" VerticalAlignment="Top" Margin="0,0,0,5" />
+        <ListBox Grid.Row="1" Grid.Column="2" Margin="0,25,0,35" ItemsSource="{Binding SelectedCriteria}" SelectedItem="{Binding SelectedCriterion}" />
+        
+        <!-- Reorder buttons at bottom of Column 2 -->
+        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Button Content="▲ Up" Command="{Binding MoveCriterionUpCommand}" Width="55" Height="26" Margin="0,0,5,0" Padding="2" FontSize="11"/>
+            <Button Content="▼ Down" Command="{Binding MoveCriterionDownCommand}" Width="55" Height="26" Padding="2" FontSize="11"/>
+        </StackPanel>
+
+        <!-- COLUMN 3: Matrix Generation Buttons -->
+        <StackPanel Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10,0">
+            <Button Style="{StaticResource ActionButton}" Content="Add&#x0A;Selected&#x0A;Criteria for&#x0A;AHP&#x0A;Analysis&#x0A;Matrix >>" Command="{Binding GenerateMatrixCommand}" Height="120" />
+            <Button Style="{StaticResource ActionButton}" Content="Clear&#x0A;AHP&#x0A;Matrix" Command="{Binding ClearMatrixCommand}" Height="70" Margin="0,10,0,0" />
+        </StackPanel>
+
+        <!-- COLUMN 4: Matrix and Methods -->
+        <Grid Grid.Row="1" Grid.Column="4" Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,5" HorizontalAlignment="Right">
+                <!-- Mathematical Method -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Method: " FontWeight="Bold" VerticalAlignment="Center"/>
+                    <RadioButton Content="AHP" IsChecked="{Binding IsAhpMethod}" Margin="5,0,15,0" VerticalAlignment="Center"/>
+                    <RadioButton Content="FAHP" IsChecked="{Binding IsFahpMethod}" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- FAHP Specific Dropdown -->
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0" HorizontalAlignment="Right" Visibility="{Binding IsFahpMethod, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="FAHP Approach: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox ItemsSource="{Binding FahpApproaches}" SelectedItem="{Binding SelectedFahpApproach}" MinWidth="130" Height="25" Padding="5,2"/>
+                </StackPanel>
+
+                <!-- Data State and Target Scale -->
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Right">
+                    <TextBlock Text="Target Scale: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox ItemsSource="{Binding TargetScales}" SelectedItem="{Binding SelectedTargetScale}" Width="70" Height="25" Padding="5,2" Margin="0,0,15,0"/>
+                    <TextBlock Text="Rasters are: " VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <RadioButton Content="Pre-Classified" IsChecked="{Binding IsPreClassified}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <RadioButton Content="Unclassified" IsChecked="{Binding IsUnclassified}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Open Reclass Manager Button -->
+                <Button Content="Open Reclassification Manager" Command="{Binding OpenReclassManagerCommand}" 
+                        Visibility="{Binding IsUnclassified, Converter={StaticResource BoolToVis}}" 
+                        Margin="0,10,0,0" Padding="10,5" HorizontalAlignment="Right" Background="#0066CC" Foreground="White" FontWeight="SemiBold"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,0,5">
+                <TextBlock Text="Pairwise Comparison Matrix" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                <RadioButton Content="Manual" IsChecked="{Binding IsManualMatrixEntry}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                <RadioButton Content="Import CSV" IsChecked="{Binding IsImportCsvMatrixEntry}" VerticalAlignment="Center"/>
+                <Button Content="Browse..." Command="{Binding ImportMatrixCommand}" Visibility="{Binding IsImportCsvMatrixEntry, Converter={StaticResource BoolToVis}}" Margin="10,0,0,0" Padding="10,2" Height="22" VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <Border Grid.Row="2" Background="#FFF5EC" BorderBrush="#E5C7A3" BorderThickness="1" Margin="0,5">
+                <TextBlock FontStyle="Italic" Foreground="#AA3333" Padding="5">
+                    1) Enter values between 1 (equal preference) and 9 (very strong preference).<LineBreak/>
+                    2) Pairwise comparison is done row against the column.<LineBreak/>
+                    3) Inverse values are automatically computed and displayed.
+                </TextBlock>
+            </Border>
+
+            <DataGrid Grid.Row="3" ItemsSource="{Binding AhpMatrix}" HeadersVisibility="Column" 
+                      CanUserAddRows="False" AutoGenerateColumns="True" Background="LightGray"
+                      BorderBrush="Black" BorderThickness="1" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn" />
+
+            <!-- Sub grid for lower part of Column 4 -->
+            <Grid Grid.Row="4" Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="Results (CR / Weights / SA)" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding ConsistencyRatioText, Mode=TwoWay}" 
+                             IsReadOnly="True" 
+                             Height="140" 
+                             Background="#FAFAFA" 
+                             FontFamily="Consolas" 
+                             FontSize="11"
+                             TextWrapping="Wrap" 
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
+                             BorderBrush="#CCCCCC"
+                             Padding="6"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Width="150">
+                    <Button Content="Calculate Weights" Command="{Binding CalculateWeightsCommand}" Height="35" Margin="0,0,0,10" 
+                            Background="#28A745" Foreground="White" FontWeight="SemiBold" BorderThickness="0"/>
+                    <Button Content="Create Suitability Map" Command="{Binding CreateSuitabilityMapCommand}" Height="35"
+                            Background="#0066CC" Foreground="White" FontWeight="SemiBold" BorderThickness="0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- COLUMN 5: Sensitivity Analysis -->
+        <Border Grid.Row="1" Grid.Column="5" BorderThickness="1" BorderBrush="#DDDDDD" Margin="10,0,0,0" Padding="10" Background="White" Height="400" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="Sensitivity Analysis (SA)" FontWeight="Bold" FontSize="14" Margin="0,0,0,20"/>
+                
+                <TextBlock Text="Choose Main Criterion:" Margin="0,0,0,5" />
+                <ComboBox ItemsSource="{Binding SelectedCriteria}" SelectedItem="{Binding SelectedMainCriterion}" Margin="0,0,0,20" />
+                
+                <TextBlock Text="No. of Simulations" Margin="0,0,0,5" />
+                <ComboBox ItemsSource="{Binding NumSimulationsOptions}" SelectedItem="{Binding SelectedNumSimulations}" Margin="0,0,0,20" />
+                
+                <Button Content="Perform SA &amp;&#x0A;Save your weights" Command="{Binding PerformSACommand}" Height="45" Margin="0,40,0,20" />
+                <Button Content="Close" Height="30" />
+            </StackPanel>
+        </Border>
+
+        <!-- FOOTER STATUS -->
+        <TextBlock Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2" Text="{Binding GeoprocessingStatus}" Foreground="DarkRed" FontWeight="Bold" Margin="10,15,0,0" />
+        
+    </Grid>
+</UserControl>

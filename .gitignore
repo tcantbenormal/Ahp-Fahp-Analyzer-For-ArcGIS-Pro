@@ -1,0 +1,18 @@
+# .NET Core / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# ArcGIS Pro Specific
+*.esriAddinX
+*.pdb
+*.xml
+*.log
+
+# Git / Misc
+.DS_Store
+Thumbs.db
