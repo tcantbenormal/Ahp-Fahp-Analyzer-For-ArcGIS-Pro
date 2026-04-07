@@ -8,9 +8,7 @@ obj/
 *.suo
 
 # ArcGIS Pro Specific
-*.esriAddinX
 *.pdb
-*.xml
 *.log
 
 # Git / Misc

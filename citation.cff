@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "AHP/FAHP Spatial Analyzer for ArcGIS Pro"
+version: 1.0.0
+date-released: 2026-04-07
+authors:
+  - given-names: Taimoor
+    family-names: Ashfaq
+    email: taimoorcantbenormal@gmail.com
+    affiliation: "IGIS, National University of Sciences and Technology (NUST)"
+repository-code: "https://github.com/tcantbenormal/Ahp-Fahp-Analyzer-For-ArcGIS-Pro"
+license: MIT
+keywords:
+  - AHP
+  - Fuzzy AHP
+  - MCDA
+  - ArcGIS Pro
+  - Spatial Analysis
+  - Suitability Mapping
+  - GIS
+abstract: >-
+  A professional-grade Multi-Criteria Decision Analysis (MCDA) Add-in for
+  ArcGIS Pro implementing both the Analytic Hierarchy Process (AHP) and
+  Fuzzy Analytic Hierarchy Process (FAHP) to generate spatial suitability
+  maps through a streamlined WPF interface.

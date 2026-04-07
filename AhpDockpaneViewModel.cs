@@ -347,9 +347,64 @@ namespace AhpFahpAnalyzer
                         table.Rows.Add(row);
                     }
 
+                    // Post-process: enforce exact reciprocals from the upper triangle
+                    // This prevents validation errors caused by floating-point precision
+                    // differences in the CSV file's lower-triangle values.
+                    int n = actualCriteria.Count;
+                    for (int i = 0; i < n; i++)
+                    {
+                        table.Rows[i]["C_" + i] = 1.0; // Diagonal must be 1.0
+                        for (int j = i + 1; j < n; j++)
+                        {
+                            double upperVal = Convert.ToDouble(table.Rows[i]["C_" + j]);
+                            if (upperVal > 0)
+                            {
+                                table.Rows[j]["C_" + i] = Math.Round(1.0 / upperVal, 4);
+                            }
+                        }
+                    }
+
+                    // Attach ColumnChanged handler so subsequent manual edits
+                    // also auto-compute reciprocals (same as GenerateMatrixCommand).
+                    table.ColumnChanged += (s, e) =>
+                    {
+                        if (_isUpdatingMatrix) return;
+                        
+                        try
+                        {
+                            _isUpdatingMatrix = true;
+                            if (e.Column.ColumnName == "Criteria" || e.Row[e.Column] == DBNull.Value) return;
+                            
+                            double val = Convert.ToDouble(e.Row[e.Column]);
+                            if (val == 0) return;
+                            
+                            int rowIndex = table.Rows.IndexOf(e.Row);
+                            int colIndex = table.Columns.IndexOf(e.Column);
+                            int critIndex = colIndex - 1;
+                            
+                            if (rowIndex == critIndex && val != 1.0)
+                            {
+                                e.Row[e.Column] = 1.0;
+                                return;
+                            }
+                            
+                            if (rowIndex != critIndex)
+                            {
+                                if (critIndex >= 0 && critIndex < table.Rows.Count && rowIndex + 1 < table.Columns.Count)
+                                {
+                                    table.Rows[critIndex][rowIndex + 1] = Math.Round(1.0 / val, 4);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            _isUpdatingMatrix = false;
+                        }
+                    };
+
                     AhpMatrix = table.DefaultView;
                     _computedWeights = null; // Reset computed weights
-                    GeoprocessingStatus = "CSV Matrix imported successfully.";
+                    GeoprocessingStatus = "CSV Matrix imported successfully. Reciprocals recalculated.";
                 }
                 catch (Exception ex)
                 {
