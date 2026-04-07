@@ -227,7 +227,7 @@ AhpFahpAnalyzer/
 │
 ├── docs/
 │   ├── METHODOLOGY.md            # AHP & FAHP mathematical foundations
-│   └── images/                   # Screenshots (add your own)
+│   └── images/                   # Screenshots
 │
 ├── .gitignore
 ├── .gitattributes
