@@ -100,7 +100,7 @@ Seamlessly triggers a bundled **Python Toolbox** (`.pyt`) to perform the weighte
 
 ### Quick Install (Pre-built Add-in)
 
-1. Download **`AhpFahpAnalyzer.esriAddinX`** from the [repository root](AhpFahpAnalyzer.esriAddinX) or the [Releases](#) page
+1. Download **`AhpFahpAnalyzer.esriAddinX`** from the [repository root](AhpFahpAnalyzer.esriAddinX) or the [Releases](https://github.com/tcantbenormal/Ahp-Fahp-Analyzer-For-ArcGIS-Pro/releases) page
 2. **Close ArcGIS Pro** if it is running
 3. Double-click the `.esriAddinX` file — the ArcGIS Add-in Installation Utility will open
 4. Click **Install Add-in**
